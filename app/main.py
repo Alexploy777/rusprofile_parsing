@@ -8,9 +8,7 @@
 # form.setupUi(window)
 # window.show()
 # app.exec()
-'''
-search_inn
-'''
+
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
