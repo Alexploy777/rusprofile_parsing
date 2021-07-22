@@ -14,6 +14,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
 from gui_ofd import Ui_MainWindow
 
+# from progress_print import
+
 class Ofd(QtWidgets.QMainWindow):
     def __init__(self):
         super(Ofd, self).__init__()
@@ -28,7 +30,8 @@ class Ofd(QtWidgets.QMainWindow):
         self.ui.search_inn.clicked.connect(self.search_inn)
 
     def search_inn(self):
-        print('search_inn')
+        input_search_str = self.ui.inn.text()
+        print(input_search_str, type(input_search_str))
 
 
 def main(): # точка входа
