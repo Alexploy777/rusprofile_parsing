@@ -144,7 +144,7 @@ def mail_assembly(data):
     okgu = data['okgu']
     okopf = data['okopf']
 
-    ogrn = '1203500002870'
+    # ogrn = '1203500002870'
 
     res = f'-------- Пересылаемое сообщение --------\nОт кого: {ot_kogo_name} <{ot_kogo_mail}>\n' \
           f'Дата: {date}\n' \
