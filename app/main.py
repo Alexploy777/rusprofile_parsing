@@ -14,6 +14,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
 from gui_ofd import Ui_MainWindow
 
+from parsing_func import *
+
 # from progress_print import
 
 class Ofd(QtWidgets.QMainWindow):
@@ -32,14 +34,20 @@ class Ofd(QtWidgets.QMainWindow):
     def search_inn(self):
         input_search_str = self.ui.inn.text()
         print(input_search_str, type(input_search_str))
-
+        client = Parser(input_search_str)
+        ofd_data = client.get_ofd_data()
+        print(ofd_data)
 
 def main(): # точка входа
     app = QtWidgets.QApplication([])
     application = Ofd()
     application.show()
 
+
     sys.exit(app.exec())
+
+
+
 
 if __name__ == '__main__':
     main()

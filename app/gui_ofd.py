@@ -203,7 +203,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Введите ИНН"))
         self.inn.setPlaceholderText(_translate("MainWindow", "введите строку"))
-        self.search_inn.setText(_translate("MainWindow", "ИСКАТЬ"))
+        self.search_inn.setText(_translate("MainWindow", "ИСКАТЬ"))             # кнопка
         self.label_2.setText(_translate("MainWindow", "ФИО руководителя"))
         self.label_3.setText(_translate("MainWindow", "EMAIL пользователя"))
         self.pushButton_2.setText(_translate("MainWindow", "генерировать"))
