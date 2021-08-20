@@ -3,8 +3,11 @@ import fake_useragent
 from bs4 import BeautifulSoup
 import re
 
+class Phone_gen:
+    pass
 
-class Parser:
+
+class Parser_ofd:
     prefix_id_client = ''  # рабочие варианты ip, id
     id_client = ''
     url_client = ''
@@ -21,9 +24,9 @@ class Parser:
         r_id_row = requests.get(self.url, headers=user_agent)
         if r_id_row.ok:
             r_id_item = r_id_row.json() # принимаем json ответа
-            Parser.status_code = r_id_row.status_code
+            Parser_ofd.status_code = r_id_row.status_code
         else:
-            Parser.status_code = r_id_row.status_code
+            Parser_ofd.status_code = r_id_row.status_code
             # print(r_id_row.status_code)
             return
 
@@ -36,11 +39,11 @@ class Parser:
             else:
                 link = '/search_inactive=0'  # исключение
             if link == '/search_inactive=0':
-                Parser.prefix_id_client = None
-                Parser.id_client = None
+                Parser_ofd.prefix_id_client = None
+                Parser_ofd.id_client = None
             else:
-                Parser.prefix_id_client = link[1:3]
-                Parser.id_client = link[4::]
+                Parser_ofd.prefix_id_client = link[1:3]
+                Parser_ofd.id_client = link[4::]
 
         except:
             print('Не могу получить ID')
@@ -53,15 +56,16 @@ class Parser:
         okpo = None
         fss = None
         fio = None
+        company_name = None
         info = ''
 
 
         try:
-            if Parser.prefix_id_client == 'id':  # клиенты, где в адресе ID
-                Parser.url_client = 'https://www.rusprofile.ru/' + 'id/' + Parser.id_client
-                Parser.url_clien_requisites = 'https://www.rusprofile.ru' + '/requisites/' + Parser.id_client
+            if Parser_ofd.prefix_id_client == 'id':  # клиенты, где в адресе ID
+                Parser_ofd.url_client = 'https://www.rusprofile.ru/' + 'id/' + Parser_ofd.id_client
+                Parser_ofd.url_clien_requisites = 'https://www.rusprofile.ru' + '/requisites/' + Parser_ofd.id_client
 
-                requisites = requests.get(Parser.url_clien_requisites).text  # запрос страницы реквизитов
+                requisites = requests.get(Parser_ofd.url_clien_requisites).text  # запрос страницы реквизитов
 
                 kpp = re.findall(r'(?<=<span\ class="copy-value"\ id="clip_kpp">).*?(?=</span>)', requisites)[0]
                 fns = kpp[0:4]
@@ -69,21 +73,23 @@ class Parser:
                 # kpp = re.findall(r'(?<=<span\ class="copy-value"\ id="clip_kpp">).*?(?=</span>)', requisites)[0]
                 okpo = re.findall(r'(?<=<span\ class="copy-value"\ id="clip_okpo">).*?(?=</span>)', requisites)[0]
                 fss = re.findall(r'(?<=<span\ class="copy-value"\ id="clip_fss_num">).*?(?=</span>)', requisites)[0]
+                company_name = re.findall(r'(?<=\ <h1 itemprop="name">)[\w\W]*?(?=</h1>)', requisites)[0].strip()
 
-                home = requests.get(Parser.url_client).text  # запрос главной страницы
+                home = requests.get(Parser_ofd.url_client).text  # запрос главной страницы
                 home_soup = BeautifulSoup(home, 'lxml')
                 fio = home_soup.find('div', class_='company-row hidden-parent').find('span',
                                                                                      class_='company-info__text').text.strip()
 
 
-            elif Parser.prefix_id_client == 'ip':  # клиенты, где в адресе IP
-                Parser.url_client = 'https://www.rusprofile.ru' + '/ip/' + Parser.id_client
+            elif Parser_ofd.prefix_id_client == 'ip':  # клиенты, где в адресе IP
+                Parser_ofd.url_client = 'https://www.rusprofile.ru' + '/ip/' + Parser_ofd.id_client
 
-                requisites = requests.get(Parser.url_client).text
+                requisites = requests.get(Parser_ofd.url_client).text
                 pfr = re.findall(r'(?<=<span\ class="copy_target"\ id="req_pfr">).*?(?=</span>)', requisites)[0]
                 okpo = re.findall(r'(?<=<span\ class="copy_target"\ id="req_okpo">).*?(?=</span>)', requisites)[0]
                 fss = re.findall(r'(?<=<span\ class="copy_target"\ id="req_fss">).*?(?=</span>)', requisites)[0]
                 fio = re.findall(r'(?<=\ <h2\ class="company-name">)[\w\W]*?(?=</h2>)', requisites)[0].strip()
+                company_name = re.findall(r'(?<=\ <h1 itemprop="name">)[\w\W]*?(?=</h1>)', requisites)[0].strip()
 
             else:
                 info = 'некорректный запрос или надо вводить капчу!'
@@ -93,20 +99,21 @@ class Parser:
 
 
         data = {
+            'company_name': company_name,
             'фио': fio,
             'фнс': fns,
             'пфр': pfr,
             'росстат': okpo,
             'фсс': fss,
             'info': info,
-            'status_code': Parser.status_code,
+            'status_code': Parser_ofd.status_code,
         }
         print(data)
         return data
 
 
 def main(search_str):
-    client = Parser(search_str)  # создали объект класса Parser
+    client = Parser_ofd(search_str)  # создали объект класса Parser_ofd
     ofd = client.get_ofd_data()
 
 if __name__ == '__main__':
